@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.db.models import F
+from django.db.models import Q
 from .models import Extract
 from django.views.decorators.http import require_GET
 
