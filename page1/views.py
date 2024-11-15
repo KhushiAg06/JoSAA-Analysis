@@ -198,23 +198,27 @@ def get_roundwise_type(request):
 
 
 def get_preferences(request):
-    
+    # Get rank and program names from request parameters
     rank_val = request.GET.get('rank')
     programname_1 = request.GET.get('programname')
     programname_2 = request.GET.get('programname_2')
     programname_3 = request.GET.get('programname_3')
+
+    # Build the query for multiple programs using Q objects
+    program_filter = Q(Program_name=programname_1) | Q(Program_name=programname_2) | Q(Program_name=programname_3)
+
+    # Retrieve data with the applied filters
     data = Extract.objects.filter(
-        Year = 2023,
-        Program_name = programname_1,
-        Seat_type = "OPEN",
-        Gender = "Gender-Neutral",
-        Round = 3,
-        Program_duration = 4,
+        Year=2023,
+        Seat_type="OPEN",
+        Gender="Gender-Neutral",
+        Round=3,
+        Program_duration=4,
         Closing_rank__gte=rank_val
-    ).order_by('Opening_rank').values()
-    
+    ).filter(program_filter).order_by('Opening_rank').values()
+
+    # Convert data to a list and return as JSON response
     data = list(data)
-    
     return JsonResponse(data, safe=False)
 
 
